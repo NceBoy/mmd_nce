@@ -17,6 +17,7 @@ from mmdet.apis import multi_gpu_test, single_gpu_test
 from mmdet.datasets import (build_dataloader, build_dataset,
                             replace_ImageToTensor)
 from mmdet.models import build_detector
+from mmdet.custom_models import *
 
 
 def parse_args():

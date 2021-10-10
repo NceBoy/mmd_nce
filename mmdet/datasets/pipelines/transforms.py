@@ -803,7 +803,7 @@ class RandomCrop:
             # allow_negative_crop is False, skip this image.
             if (key == 'gt_bboxes' and not valid_inds.any()
                     and not allow_negative_crop):
-                return None
+                return results
             results[key] = bboxes[valid_inds, :]
             # label fields. e.g. gt_labels and gt_labels_ignore
             label_key = self.bbox2label.get(key)

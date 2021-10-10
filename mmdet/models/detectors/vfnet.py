@@ -18,3 +18,11 @@ class VFNet(SingleStageDetector):
                  init_cfg=None):
         super(VFNet, self).__init__(backbone, neck, bbox_head, train_cfg,
                                     test_cfg, pretrained, init_cfg)
+
+
+    def forward_dummy(self, img):
+        scores, _, pred = super().forward_dummy(img)
+        import torch.nn.functional as  F
+        for i, score in enumerate(scores):
+            scores[i] = F.sigmoid(scores[i])
+        return scores, pred

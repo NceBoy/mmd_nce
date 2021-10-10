@@ -1,2 +1,3 @@
-from .convs.DBBConv import DBBConv
-from .convs.RepVGGBlock import RepVGGConv
+from .convs.dbb_conv import DBBConv
+from .convs.repvgg_conv import RepVGGConv
+from .convs.sep_conv import SepConv

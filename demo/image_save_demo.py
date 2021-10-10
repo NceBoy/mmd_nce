@@ -4,6 +4,7 @@ import os
 import warnings
 from mmdet.apis import (async_inference_detector, inference_detector,
                         init_detector)
+import mmdet.custom_models
 
 
 def parse_args():
@@ -60,6 +61,13 @@ def main(args):
     # build the model from a config file and a checkpoint file
     model = init_detector(args.config, args.checkpoint, device=args.device)
     # test a single image
+    if not os.path.isdir(args.out_file):
+        res = input(f"{args.out_file} doesn't exist! Do you want to create it? yes/no")
+        if res.startswith('y'):
+            os.mkdir(args.out_file)
+        else:
+            return FileNotFoundError
+
     assert os.path.isdir(args.out_file)
     img_file_list = os.listdir(args.img_file)
     for img_name in img_file_list:

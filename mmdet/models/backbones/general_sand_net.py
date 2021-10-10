@@ -46,17 +46,15 @@ class SandBottleNeck(nn.Module):
             self.short_cut = nn.Sequential(shortcut_dict)
 
     def forward(self, x):
-        try:
-            return self.short_cut(x) + self.block(x)
-        except:
-            print(111)
+        return self.short_cut(x) + self.block(x)
+
 
 
 class SandStage(nn.Module):
     def __init__(self, in_channel, stage_channel, num_block, kernel_size=3, expansion=4,
                  act_cfg=dict(type='ReLU'),
                  norm_cfg=dict(type='BN'),
-                 conv_type="DBBBlock"):
+                 conv_cfg=dict(type="Conv2d")):
         super().__init__()
         LayerDict = OrderedDict()
         for num in range(num_block):
@@ -64,13 +62,13 @@ class SandStage(nn.Module):
                 LayerDict["Block{}".format(num)] = SandBottleNeck(in_channel, stage_channel, stride=2,
                                                                   kernel_size=kernel_size, expansion=expansion,
                                                                   act_cfg=act_cfg, norm_cfg=norm_cfg,
-                                                                  conv_type=conv_type
+                                                                  conv_cfg=conv_cfg
                                                                   )
                 continue
             LayerDict["Block{}".format(num)] = SandBottleNeck(stage_channel*expansion, stage_channel, stride=1,
                                                               kernel_size=kernel_size, expansion=expansion,
                                                               act_cfg=act_cfg, norm_cfg=norm_cfg,
-                                                              conv_type=conv_type
+                                                              conv_cfg=conv_cfg
                                                               )
         self.stage = nn.Sequential(LayerDict)
 
@@ -79,7 +77,7 @@ class SandStage(nn.Module):
 
 
 @BACKBONES.register_module()
-class SandNet(nn.Module):
+class GeneralSandNet(nn.Module):
     def __init__(self,
                  stem_channels,
                  stage_channels,
@@ -90,9 +88,9 @@ class SandNet(nn.Module):
                  num_out=5,
                  norm_cfg=dict(type='BN', requires_grad=True),
                  act_cfg=dict(type='ReLU'),
-                 conv_type="DBBBlock"
+                 conv_cfg=dict(type="DBBConv")
                  ):
-        super(SandNet, self).__init__()
+        super(GeneralSandNet, self).__init__()
         if isinstance(kernel_size, int):
             kernel_sizes = [kernel_size for _ in range(len(stage_channels))]
         if isinstance(kernel_size, list):
@@ -117,7 +115,7 @@ class SandNet(nn.Module):
         for num_stages in range(self.stage_nums):
             stage = SandStage(in_channel, stage_channel=stage_channels[num_stages],
                               num_block=block_per_stage[num_stages], kernel_size=kernel_sizes[num_stages],
-                              expansion=expansions[num_stages], act_cfg=act_cfg, norm_cfg=norm_cfg, conv_type=conv_type)
+                              expansion=expansions[num_stages], act_cfg=act_cfg, norm_cfg=norm_cfg, conv_cfg=conv_cfg)
             in_channel = stage_channels[num_stages] * expansions[num_stages]
             self.stages.append(stage)
 

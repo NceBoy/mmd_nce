@@ -5,7 +5,7 @@ import torch
 from mmcv import DictAction
 from mmcv.runner import load_checkpoint
 from mmdet.models import build_detector
-
+from mmdet.custom_models import *
 
 def recursive_fuse_conv(module, prefix=''):
     for name, child in module._modules.items():
@@ -117,7 +117,7 @@ if __name__ == '__main__':
     cfg.model.train_cfg = None
     model = build_detector(cfg.model)
     model.eval()
-
+    # torch.save(model.state_dict(), f"{args.output_file[:-4]}.pth")
     try:
         checkpoint = load_checkpoint(model, args.checkpoint, map_location='cpu')
 
@@ -134,3 +134,26 @@ if __name__ == '__main__':
         args.output_names,
         args.input_names,
         output_file=args.output_file)
+
+
+
+# ../../configs/vfnet/vfnet_sandnet_4cls_3anchor_objectness_half_person_depther.py
+# ../work_dirs/vfnet_sandnet_4cls_3anchor_objectness_half_person_depther/latest.pth
+# --output-file
+# ../work_dirs/vfnet_sandnet_4cls_3anchor_objectness_half_person_depther/latest.onnx
+# --shape
+# 1
+# 3
+# 256
+# 512
+# --output-names
+# P3_logits
+# P4_logits
+# P5_logits
+# P6_logits
+# P7_logits
+# P3_bbox_reg
+# P4_bbox_reg
+# P5_bbox_reg
+# P6_bbox_reg
+# P7_bbox_reg
