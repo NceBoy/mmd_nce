@@ -1,7 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 from mmcv.ops.nms import batched_nms
-
 from mmdet.core.bbox.iou_calculators import bbox_overlaps
 
 
